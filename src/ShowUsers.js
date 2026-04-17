@@ -22,41 +22,89 @@ function ShowUsers(props) {
   const [status, setStatus] = useState("");
   const [message, setMessage] = useState("");
   const [errorData, setErrorData] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     props.getUsersData();
   }, []);
 
   async function deleteUser(id) {
-    const url = `${props.url}${id}`;
-    let response = await fetch(url, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${props.token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    // console.log(response.status);
-    // response = await response.json();
-    if (response.status === 204) {
-      props.getUsersData();
+    try {
+      setDeletingId(id);
+      const url = `${props.url}/${id}`;
+      let response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${props.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      // console.log(response.status);
+      // response = await response.json();
+      if (response.status === 204) {
+        props.getUsersData();
+      }
+    } catch (error) {
+      console.error("Network Error:", error);
+      setMessage("Network error");
+    } finally {
+      setDeletingId(null);
     }
   }
 
   async function editUser(id) {
     try {
       // console.log(id);
+      setLoading(true);
       setShow(true);
-      const url = `${props.url}${id}`;
+      const url = `${props.url}/${id}`;
       let response = await fetch(url);
       response = await response.json();
       setName(response.name);
       setEmail(response.email);
       setGender(response.gender);
       setStatus(response.status);
+      setUserId(response.id);
     } catch (error) {
       console.error("Network Error:", error);
       setMessage("Network error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateUser() {
+    try {
+      setLoading(true);
+      const url = `${props.url}/${userId}`;
+      let response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${props.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, gender, status }),
+      });
+      let data = await response.json();
+      if (response.ok) {
+        setMessage("Added Successfully.");
+        setName("");
+        setEmail("");
+        setGender("");
+        setStatus("");
+        setShow(false);
+        props.getUsersData();
+      } else {
+        console.log(data);
+        setErrorData(data);
+      }
+    } catch (error) {
+      console.error("Network Error:", error);
+      setMessage("Network error");
+    } finally {
+      setLoading(false);
     }
   }
   return (
@@ -73,6 +121,13 @@ function ShowUsers(props) {
           </tr>
         </thead>
         <tbody>
+          {props.loading ? (
+            <tr>
+              <td colSpan={6} className="text-center">
+                <strong className="text-danger">Loading Data...</strong>
+              </td>
+            </tr>
+          ) : null}
           {props.userData &&
             props.userData.map((data, key) => (
               <tr key={key}>
@@ -98,8 +153,11 @@ function ShowUsers(props) {
                     variant="danger"
                     size="sm"
                     onClick={() => deleteUser(data.id)}
+                    disabled={deletingId === data.id}
                   >
-                    Delete
+                    {deletingId && deletingId === data.id
+                      ? "Deleting..."
+                      : "Delete"}
                   </Button>
                 </td>
               </tr>
@@ -187,7 +245,9 @@ function ShowUsers(props) {
                 </FloatingLabel>
               </Col>
             </Row>
-            <Button variant="primary">Update</Button>
+            <Button variant="primary" onClick={updateUser} disabled={loading}>
+              {loading ? "Updating..." : "Update"}
+            </Button>
           </Container>
         </Modal.Body>
       </Modal>

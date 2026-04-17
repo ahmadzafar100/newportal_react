@@ -22,9 +22,11 @@ function AddUsers(props) {
   const [status, setStatus] = useState("");
   const [message, setMessage] = useState("");
   const [errorData, setErrorData] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function addUser() {
     try {
+      setLoading(true);
       let response = await fetch(props.url, {
         method: "POST",
         headers: {
@@ -49,6 +51,8 @@ function AddUsers(props) {
     } catch (error) {
       console.error("Network Error:", error);
       setMessage("Network error");
+    } finally {
+      setLoading(false);
     }
   }
   return (
@@ -135,8 +139,8 @@ function AddUsers(props) {
                 </FloatingLabel>
               </Col>
             </Row>
-            <Button variant="primary" onClick={addUser}>
-              Add
+            <Button variant="primary" onClick={addUser} disabled={loading}>
+              {loading ? "Adding..." : "Add"}
             </Button>
           </Container>
         </Modal.Body>
