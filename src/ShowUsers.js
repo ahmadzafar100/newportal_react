@@ -1,19 +1,63 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import {
+  Alert,
+  Button,
+  Col,
+  Container,
+  FloatingLabel,
+  Form,
+  Modal,
+  Row,
+  Table,
+} from "react-bootstrap";
 import DataTable from "react-data-table-component";
 
-function ShowUsers() {
-  const [userData, setUserData] = useState([]);
+function ShowUsers(props) {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [gender, setGender] = useState("");
+  const [status, setStatus] = useState("");
+  const [message, setMessage] = useState("");
+  const [errorData, setErrorData] = useState("");
+
   useEffect(() => {
-    getUsersData();
+    props.getUsersData();
   }, []);
 
-  async function getUsersData() {
-    const url = "https://gorest.co.in/public/v2/users";
-    let response = await fetch(url);
-    response = await response.json();
-    // console.log(response);
-    setUserData(response);
+  async function deleteUser(id) {
+    const url = `${props.url}${id}`;
+    let response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${props.token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    // console.log(response.status);
+    // response = await response.json();
+    if (response.status === 204) {
+      props.getUsersData();
+    }
+  }
+
+  async function editUser(id) {
+    try {
+      // console.log(id);
+      setShow(true);
+      const url = `${props.url}${id}`;
+      let response = await fetch(url);
+      response = await response.json();
+      setName(response.name);
+      setEmail(response.email);
+      setGender(response.gender);
+      setStatus(response.status);
+    } catch (error) {
+      console.error("Network Error:", error);
+      setMessage("Network error");
+    }
   }
   return (
     <>
@@ -29,19 +73,32 @@ function ShowUsers() {
           </tr>
         </thead>
         <tbody>
-          {userData &&
-            userData.map((data, key) => (
+          {props.userData &&
+            props.userData.map((data, key) => (
               <tr key={key}>
                 <td>{data.id}</td>
                 <td>{data.name}</td>
                 <td>{data.email}</td>
-                <td>{data.gender}</td>
-                <td>{data.status}</td>
                 <td>
-                  <Button variant="success" size="sm" className="me-1">
+                  {data.gender.charAt(0).toUpperCase() + data.gender.slice(1)}
+                </td>
+                <td>
+                  {data.status.charAt(0).toUpperCase() + data.status.slice(1)}
+                </td>
+                <td>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    className="me-1"
+                    onClick={() => editUser(data.id)}
+                  >
                     Edit
                   </Button>
-                  <Button variant="danger" size="sm">
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => deleteUser(data.id)}
+                  >
                     Delete
                   </Button>
                 </td>
@@ -49,6 +106,91 @@ function ShowUsers() {
             ))}
         </tbody>
       </Table>
+
+      <Modal size="lg" show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add User</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Container>
+            {errorData ? (
+              <Alert variant="danger">
+                {errorData.map((err, key) => (
+                  <p className="mb-0">
+                    <span className="text-capitalize">{err.field}</span>{" "}
+                    {err.message}.
+                  </p>
+                ))}
+              </Alert>
+            ) : (
+              ""
+            )}
+            <Row>
+              <Col md={6} sm={6}>
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Name"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    type="text"
+                    placeholder="Name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                  />
+                </FloatingLabel>
+              </Col>
+              <Col md={6} sm={6}>
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Email"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                  />
+                </FloatingLabel>
+              </Col>
+              <Col md={6} sm={6}>
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Gender"
+                  className="mb-3"
+                >
+                  <Form.Select
+                    onChange={(event) => setGender(event.target.value)}
+                    value={gender}
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </Form.Select>
+                </FloatingLabel>
+              </Col>
+              <Col md={6} sm={6}>
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Status"
+                  className="mb-3"
+                >
+                  <Form.Select
+                    onChange={(event) => setStatus(event.target.value)}
+                    value={status}
+                  >
+                    <option value="">Select Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </Form.Select>
+                </FloatingLabel>
+              </Col>
+            </Row>
+            <Button variant="primary">Update</Button>
+          </Container>
+        </Modal.Body>
+      </Modal>
     </>
   );
 }

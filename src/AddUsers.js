@@ -10,7 +10,7 @@ import {
   Row,
 } from "react-bootstrap";
 
-function AddUsers() {
+function AddUsers(props) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -24,14 +24,11 @@ function AddUsers() {
   const [errorData, setErrorData] = useState("");
 
   async function addUser() {
-    const url = "https://gorest.co.in/public/v2/users?page=1";
-    const token =
-      "d78ef047181b3a3395e1d61d60ed7daad4ad085c958b215718578dba15bcc48a";
     try {
-      let response = await fetch(url, {
+      let response = await fetch(props.url, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${props.token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ name, email, gender, status }),
@@ -44,6 +41,7 @@ function AddUsers() {
         setGender("");
         setStatus("");
         setShow(false);
+        props.getUsersData();
       } else {
         console.log(data);
         setErrorData(data);
