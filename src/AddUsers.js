@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   Alert,
   Button,
@@ -23,9 +23,19 @@ function AddUsers(props) {
   const [message, setMessage] = useState("");
   const [errorData, setErrorData] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isValid, setIsValid] = useState(false);
+
+  useEffect(() => {
+    if (name !== "" && email !== "" && gender !== "" && status !== "") {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  }, [name, email, gender, status]);
 
   async function addUser() {
     try {
+      setIsValid(true);
       setLoading(true);
       let response = await fetch(props.url, {
         method: "POST",
@@ -63,7 +73,13 @@ function AddUsers(props) {
         </Button>
       </div>
 
-      <Modal size="lg" show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+      <Modal
+        size="lg"
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Add User</Modal.Title>
         </Modal.Header>
@@ -72,7 +88,7 @@ function AddUsers(props) {
             {errorData ? (
               <Alert variant="danger">
                 {errorData.map((err, key) => (
-                  <p className="mb-0">
+                  <p className="mb-0" key={key}>
                     <span className="text-capitalize">{err.field}</span>{" "}
                     {err.message}.
                   </p>
@@ -139,8 +155,16 @@ function AddUsers(props) {
                 </FloatingLabel>
               </Col>
             </Row>
-            <Button variant="primary" onClick={addUser} disabled={loading}>
-              {loading ? "Adding..." : "Add"}
+            <Button
+              variant="primary"
+              className="me-1"
+              onClick={addUser}
+              disabled={loading || !isValid}
+            >
+              Add
+            </Button>
+            <Button variant="danger" onClick={handleClose}>
+              Cancel
             </Button>
           </Container>
         </Modal.Body>

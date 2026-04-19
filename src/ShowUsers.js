@@ -30,10 +30,19 @@ function ShowUsers(props) {
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [isValid, setIsValid] = useState(false);
 
   useEffect(() => {
     props.getUsersData();
   }, []);
+
+  useEffect(() => {
+    if (name !== "" && email !== "" && gender !== "" && status !== "") {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  }, [name, email, gender, status]);
 
   async function deleteUser(id) {
     Swal.fire({
@@ -43,7 +52,7 @@ function ShowUsers(props) {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -65,7 +74,6 @@ function ShowUsers(props) {
           } else {
             Swal.fire("Error!", "Failed to delete user.", "error");
           }
-
         } catch (error) {
           Swal.fire("Error!", "Something went wrong.", "error");
         } finally {
@@ -159,28 +167,34 @@ function ShowUsers(props) {
                   {data.gender.charAt(0).toUpperCase() + data.gender.slice(1)}
                 </td>
                 <td>
-                  {
-                  data.status === 'active' ? <Badge bg="success">{data.status.charAt(0).toUpperCase() + data.status.slice(1)}</Badge>:
-                  <Badge bg="danger">{data.status.charAt(0).toUpperCase() + data.status.slice(1)}</Badge>
-                  }
+                  {data.status === "active" ? (
+                    <Badge bg="success">
+                      {data.status.charAt(0).toUpperCase() +
+                        data.status.slice(1)}
+                    </Badge>
+                  ) : (
+                    <Badge bg="danger">
+                      {data.status.charAt(0).toUpperCase() +
+                        data.status.slice(1)}
+                    </Badge>
+                  )}
                 </td>
                 <td>
                   <ButtonGroup size="sm">
-                  <Button
-                    variant="success"
-                    onClick={() => editUser(data.id)}
-                  >
-                    {<FontAwesomeIcon icon={faPencil} />}
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={() => deleteUser(data.id)}
-                    disabled={deletingId === data.id}
-                  >
-                    {deletingId && deletingId === data.id
-                      ? "Deleting..."
-                      : <FontAwesomeIcon icon={faTrash} />}
-                  </Button>
+                    <Button variant="success" onClick={() => editUser(data.id)}>
+                      {<FontAwesomeIcon icon={faPencil} />}
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={() => deleteUser(data.id)}
+                      disabled={deletingId === data.id}
+                    >
+                      {deletingId && deletingId === data.id ? (
+                        "Deleting..."
+                      ) : (
+                        <FontAwesomeIcon icon={faTrash} />
+                      )}
+                    </Button>
                   </ButtonGroup>
                 </td>
               </tr>
@@ -188,7 +202,13 @@ function ShowUsers(props) {
         </tbody>
       </Table>
 
-      <Modal size="lg" show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+      <Modal
+        size="lg"
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Edit User</Modal.Title>
         </Modal.Header>
@@ -268,8 +288,16 @@ function ShowUsers(props) {
                 </FloatingLabel>
               </Col>
             </Row>
-            <Button variant="primary" onClick={updateUser} disabled={loading}>
-              {loading ? "Updating..." : "Update"}
+            <Button
+              variant="primary"
+              className="me-1"
+              onClick={updateUser}
+              disabled={loading || !isValid}
+            >
+              Update
+            </Button>
+            <Button variant="danger" onClick={handleClose}>
+              Cancel
             </Button>
           </Container>
         </Modal.Body>
