@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Badge,
   Button,
   Col,
   Container,
@@ -138,7 +139,10 @@ function ShowUsers(props) {
                   {data.gender.charAt(0).toUpperCase() + data.gender.slice(1)}
                 </td>
                 <td>
-                  {data.status.charAt(0).toUpperCase() + data.status.slice(1)}
+                  {
+                  data.status === 'active' ? <Badge bg="success">{data.status.charAt(0).toUpperCase() + data.status.slice(1)}</Badge>:
+                  <Badge bg="danger">{data.status.charAt(0).toUpperCase() + data.status.slice(1)}</Badge>
+                  }
                 </td>
                 <td>
                   <Button
@@ -165,9 +169,9 @@ function ShowUsers(props) {
         </tbody>
       </Table>
 
-      <Modal size="lg" show={show} onHide={handleClose}>
+      <Modal size="lg" show={show} onHide={handleClose} backdrop="static" keyboard={false}>
         <Modal.Header closeButton>
-          <Modal.Title>Add User</Modal.Title>
+          <Modal.Title>Edit User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Container>
