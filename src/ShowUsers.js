@@ -12,6 +12,7 @@ import {
   Table,
 } from "react-bootstrap";
 import DataTable from "react-data-table-component";
+import Swal from "sweetalert2";
 
 function ShowUsers(props) {
   const [show, setShow] = useState(false);
@@ -32,27 +33,43 @@ function ShowUsers(props) {
   }, []);
 
   async function deleteUser(id) {
-    try {
-      setDeletingId(id);
-      const url = `${props.url}/${id}`;
-      let response = await fetch(url, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${props.token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      // console.log(response.status);
-      // response = await response.json();
-      if (response.status === 204) {
-        props.getUsersData();
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          setDeletingId(id);
+
+          const url = `${props.url}/${id}`;
+
+          const response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${props.token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.status === 204) {
+            Swal.fire("Deleted!", "User has been deleted.", "success");
+            props.getUsersData();
+          } else {
+            Swal.fire("Error!", "Failed to delete user.", "error");
+          }
+
+        } catch (error) {
+          Swal.fire("Error!", "Something went wrong.", "error");
+        } finally {
+          setDeletingId(null);
+        }
       }
-    } catch (error) {
-      console.error("Network Error:", error);
-      setMessage("Network error");
-    } finally {
-      setDeletingId(null);
-    }
+    });
   }
 
   async function editUser(id) {
