@@ -1,8 +1,11 @@
+import { faCoffee, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
   Badge,
   Button,
+  ButtonGroup,
   Col,
   Container,
   FloatingLabel,
@@ -162,24 +165,23 @@ function ShowUsers(props) {
                   }
                 </td>
                 <td>
+                  <ButtonGroup size="sm">
                   <Button
                     variant="success"
-                    size="sm"
-                    className="me-1"
                     onClick={() => editUser(data.id)}
                   >
-                    Edit
+                    {<FontAwesomeIcon icon={faPencil} />}
                   </Button>
                   <Button
                     variant="danger"
-                    size="sm"
                     onClick={() => deleteUser(data.id)}
                     disabled={deletingId === data.id}
                   >
                     {deletingId && deletingId === data.id
                       ? "Deleting..."
-                      : "Delete"}
+                      : <FontAwesomeIcon icon={faTrash} />}
                   </Button>
+                  </ButtonGroup>
                 </td>
               </tr>
             ))}
