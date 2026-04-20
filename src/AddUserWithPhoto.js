@@ -76,39 +76,28 @@ const AddUserWithPhoto = () => {
         <form onSubmit={addUser}>
           <Row>
             <Col md={6} sm={6}>
-              <FloatingLabel
-                controlId="floatingInput"
-                label="Name"
-                className="mb-3"
-              >
+              <Form.Group controlId="formName" className="mb-3">
+                <Form.Label>Name</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Name"
                   onChange={(event) => setName(event.target.value)}
                   value={name}
                 />
-              </FloatingLabel>
+              </Form.Group>
             </Col>
             <Col md={6} sm={6}>
-              <FloatingLabel
-                controlId="floatingInput"
-                label="Email"
-                className="mb-3"
-              >
+              <Form.Group controlId="formEmail" className="mb-3">
+                <Form.Label>Email</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Email"
                   onChange={(event) => setEmail(event.target.value)}
                   value={email}
                 />
-              </FloatingLabel>
+              </Form.Group>
             </Col>
             <Col md={6} sm={6}>
-              <FloatingLabel
-                controlId="floatingInput"
-                label="Gender"
-                className="mb-3"
-              >
+              <Form.Group controlId="formGender" className="mb-3">
+                <Form.Label>Gender</Form.Label>
                 <Form.Select
                   value={gender}
                   onChange={(event) => setGender(event.target.value)}
@@ -117,7 +106,7 @@ const AddUserWithPhoto = () => {
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </Form.Select>
-              </FloatingLabel>
+              </Form.Group>
             </Col>
             <Col md={6} sm={6}>
               <Form.Group controlId="formFile" className="mb-3">
@@ -130,11 +119,8 @@ const AddUserWithPhoto = () => {
               </Form.Group>
             </Col>
             <Col md={6} sm={6}>
-              <FloatingLabel
-                controlId="floatingInput"
-                label="Status"
-                className="mb-3"
-              >
+              <Form.Group controlId="formStatus" className="mb-3">
+                <Form.Label>Status</Form.Label>
                 <Form.Select
                   value={status}
                   onChange={(event) => setStatus(event.target.value)}
@@ -143,7 +129,7 @@ const AddUserWithPhoto = () => {
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                 </Form.Select>
-              </FloatingLabel>
+              </Form.Group>
             </Col>
           </Row>
           <Button
