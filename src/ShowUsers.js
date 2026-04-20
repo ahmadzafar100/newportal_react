@@ -1,4 +1,10 @@
-import { faCoffee, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCoffee,
+  faFileExcel,
+  faFilePdf,
+  faPencil,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import {
@@ -16,6 +22,11 @@ import {
 } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import Swal from "sweetalert2";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 
 function ShowUsers(props) {
   const [show, setShow] = useState(false);
@@ -137,17 +148,66 @@ function ShowUsers(props) {
       setLoading(false);
     }
   }
+
+  const exportToExcel = (data) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const file = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
+
+    saveAs(file, "users.xlsx");
+  };
+
+  const exportToPDF = (data) => {
+    const doc = new jsPDF();
+
+    const tableColumn = ["ID", "Name", "Email", "Gender", "Status"];
+    const tableRows = [];
+
+    data.forEach((user) => {
+      const row = [user.id, user.name, user.email, user.gender, user.status];
+      tableRows.push(row);
+    });
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+    });
+
+    doc.save("users.pdf");
+  };
+
   return (
     <>
-      <Table bordered striped responsive>
+      <div className="text-end mb-3">
+        <Button
+          variant="warning"
+          className="me-1"
+          onClick={() => exportToPDF(props.userData)}
+        >
+          <FontAwesomeIcon icon={faFilePdf} />
+        </Button>
+        <Button variant="warning" onClick={() => exportToExcel(props.userData)}>
+          <FontAwesomeIcon icon={faFileExcel} />
+        </Button>
+      </div>
+      <Table bordered responsive hover>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Gender</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th className="bg-dark text-white">ID</th>
+            <th className="bg-dark text-white">Name</th>
+            <th className="bg-dark text-white">Email</th>
+            <th className="bg-dark text-white">Gender</th>
+            <th className="bg-dark text-white">Status</th>
+            <th className="bg-dark text-white">Action</th>
           </tr>
         </thead>
         <tbody>

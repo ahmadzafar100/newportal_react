@@ -67,7 +67,7 @@ function AddUsers(props) {
   }
   return (
     <>
-      <div className="mb-3 text-end">
+      <div className="mb-3">
         <Button variant="primary" onClick={handleShow}>
           Add User
         </Button>
@@ -108,6 +108,7 @@ function AddUsers(props) {
                     type="text"
                     placeholder="Name"
                     onChange={(event) => setName(event.target.value)}
+                    value={name}
                   />
                 </FloatingLabel>
               </Col>
@@ -121,6 +122,7 @@ function AddUsers(props) {
                     type="email"
                     placeholder="Email"
                     onChange={(event) => setEmail(event.target.value)}
+                    value={email}
                   />
                 </FloatingLabel>
               </Col>
@@ -132,6 +134,7 @@ function AddUsers(props) {
                 >
                   <Form.Select
                     onChange={(event) => setGender(event.target.value)}
+                    value={gender}
                   >
                     <option value="">Select Gender</option>
                     <option value="male">Male</option>
@@ -147,6 +150,7 @@ function AddUsers(props) {
                 >
                   <Form.Select
                     onChange={(event) => setStatus(event.target.value)}
+                    value={status}
                   >
                     <option value="">Select Status</option>
                     <option value="active">Active</option>
