@@ -48,7 +48,9 @@ const AddUserWithPhoto = () => {
 
     try {
       setLoading(true);
-      let response = await fetch("http://localhost/testapi/add_user.php", {
+      const url = "http://localhost/testapi/add_user.php";
+      const urlIp = "http://192.168.1.5/testapi/add_user.php";
+      let response = await fetch(urlIp, {
         method: "POST",
         /* headers: {
           "Content-Type": "application/json",
