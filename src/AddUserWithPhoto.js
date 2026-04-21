@@ -25,14 +25,11 @@ const AddUserWithPhoto = () => {
     handleSubmit,
     reset,
     resetField,
+    setFocus,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange", // 👈 important for real-time validation
   });
-
-  const { setFocus } = useForm();
-
-  document.querySelector(".error")?.scrollIntoView({ behavior: "smooth" });
 
   useEffect(() => {
     if (errors.name) setFocus("name");
@@ -208,17 +205,28 @@ const AddUserWithPhoto = () => {
                           setPreview(URL.createObjectURL(e.target.files[0]))
                         }
                       />
-                      <Button
-                        disabled={preview === null ? true : false}
-                        onClick={() => {
-                          setPreview(null);
-                          resetField("photo");
-                        }}
-                        variant="dark"
-                        id="button-addon2"
-                      >
-                        Remove
-                      </Button>
+                      {preview !== null ? (
+                        <>
+                          <Button
+                            variant="info"
+                            href={preview}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Preview
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              setPreview(null);
+                              resetField("photo");
+                            }}
+                            variant="dark"
+                            id="button-addon2"
+                          >
+                            Remove
+                          </Button>
+                        </>
+                      ) : null}
                     </InputGroup>
                     {errors.photo && (
                       <span
@@ -229,7 +237,6 @@ const AddUserWithPhoto = () => {
                       </span>
                     )}
                   </Form.Group>
-                  {preview && <img src={preview} width="100" />}
                 </Col>
                 <Col md={6} sm={6}>
                   <Form.Group controlId="formStatus" className="mb-3">
