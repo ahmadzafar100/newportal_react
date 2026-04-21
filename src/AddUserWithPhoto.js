@@ -95,9 +95,11 @@ const AddUserWithPhoto = () => {
                 <Alert variant="danger">{message.message}</Alert>
               ) : null}
               <Row>
-                <Col md={6} sm={6}>
+                <Col md={4} sm={6}>
                   <Form.Group controlId="formName" className="mb-3">
-                    <Form.Label>Name</Form.Label>
+                    <Form.Label>
+                      Name<span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
                       type="text"
                       className={errors.name ? "border border-danger" : null}
@@ -125,9 +127,11 @@ const AddUserWithPhoto = () => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6} sm={6}>
+                <Col md={4} sm={6}>
                   <Form.Group controlId="formEmail" className="mb-3">
-                    <Form.Label>Email</Form.Label>
+                    <Form.Label>
+                      Email<span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
                       type="email"
                       className={errors.email ? "border border-danger" : null}
@@ -159,9 +163,11 @@ const AddUserWithPhoto = () => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6} sm={6}>
+                <Col md={4} sm={6}>
                   <Form.Group controlId="formGender" className="mb-3">
-                    <Form.Label>Gender</Form.Label>
+                    <Form.Label>
+                      Gender<span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Select
                       className={errors.gender ? "border border-danger" : null}
                       {...register("gender", {
@@ -182,9 +188,11 @@ const AddUserWithPhoto = () => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6} sm={6}>
+                <Col md={4} sm={6}>
                   <Form.Group controlId="formFile" className="mb-3">
-                    <Form.Label>Photo</Form.Label>
+                    <Form.Label>
+                      Photo<span className="text-danger">*</span>
+                    </Form.Label>
                     <InputGroup>
                       <Form.Control
                         type="file"
@@ -238,9 +246,11 @@ const AddUserWithPhoto = () => {
                     )}
                   </Form.Group>
                 </Col>
-                <Col md={6} sm={6}>
+                <Col md={4} sm={6}>
                   <Form.Group controlId="formStatus" className="mb-3">
-                    <Form.Label>Status</Form.Label>
+                    <Form.Label>
+                      Status<span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Select
                       className={errors.status ? "border border-danger" : null}
                       {...register("status", {
