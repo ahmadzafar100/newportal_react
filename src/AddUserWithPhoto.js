@@ -185,7 +185,7 @@ const AddUserWithPhoto = () => {
                 <Col md={6} sm={6}>
                   <Form.Group controlId="formFile" className="mb-3">
                     <Form.Label>Photo</Form.Label>
-                    <InputGroup className="mb-3">
+                    <InputGroup>
                       <Form.Control
                         type="file"
                         className={errors.photo ? "border border-danger" : null}
