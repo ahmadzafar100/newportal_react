@@ -1,49 +1,55 @@
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Alert,
   Button,
+  Card,
   Col,
   Container,
   FloatingLabel,
   Form,
+  InputGroup,
   Row,
 } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 
 const AddUserWithPhoto = () => {
-  const [name, setName] = useState("");
-  const [gender, setGender] = useState("");
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("");
-  const [photo, setPhoto] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isValid, setIsValid] = useState(false);
   const [errorData, setErrorData] = useState("");
-  const fileRef = useRef(null);
+  const [message, setMessage] = useState("");
+  const [preview, setPreview] = useState(null);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    resetField,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: "onChange", // 👈 important for real-time validation
+  });
+
+  const { setFocus } = useForm();
+
+  document.querySelector(".error")?.scrollIntoView({ behavior: "smooth" });
 
   useEffect(() => {
-    if (
-      name !== "" &&
-      email !== "" &&
-      gender !== "" &&
-      status !== "" &&
-      photo !== ""
-    ) {
-      setIsValid(true);
-    } else {
-      setIsValid(false);
-    }
-  }, [name, email, gender, status, photo]);
+    if (errors.name) setFocus("name");
+    else if (errors.email) setFocus("email");
+    else if (errors.gender) setFocus("gender");
+  }, [errors]);
 
-  const addUser = async (e) => {
+  const addUser = async (data, e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("gender", gender);
-    formData.append("status", status);
-    formData.append("photo", photo);
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("gender", data.gender);
+    formData.append("status", data.status);
+    formData.append("photo", data.photo[0]);
 
     try {
-      setIsValid(true);
       setLoading(true);
       let response = await fetch("http://localhost/testapi/add_user.php", {
         method: "POST",
@@ -54,12 +60,13 @@ const AddUserWithPhoto = () => {
       });
       let data = await response.json();
       if (response.ok) {
-        setName("");
-        setEmail("");
-        setGender("");
-        setStatus("");
-        fileRef.current.value = "";
-        setPhoto("");
+        if (data.status) {
+          reset();
+          setPreview(null);
+          setMessage(data);
+        } else {
+          setMessage(data);
+        }
       } else {
         console.log(data);
         setErrorData(data);
@@ -73,74 +80,204 @@ const AddUserWithPhoto = () => {
   return (
     <>
       <Container className="py-5">
-        <form onSubmit={addUser}>
-          <Row>
-            <Col md={6} sm={6}>
-              <Form.Group controlId="formName" className="mb-3">
-                <Form.Label>Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  onChange={(event) => setName(event.target.value)}
-                  value={name}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6} sm={6}>
-              <Form.Group controlId="formEmail" className="mb-3">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  onChange={(event) => setEmail(event.target.value)}
-                  value={email}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6} sm={6}>
-              <Form.Group controlId="formGender" className="mb-3">
-                <Form.Label>Gender</Form.Label>
-                <Form.Select
-                  value={gender}
-                  onChange={(event) => setGender(event.target.value)}
-                >
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </Form.Select>
-              </Form.Group>
-            </Col>
-            <Col md={6} sm={6}>
-              <Form.Group controlId="formFile" className="mb-3">
-                <Form.Label>Photo</Form.Label>
-                <Form.Control
-                  type="file"
-                  ref={fileRef}
-                  onChange={(event) => setPhoto(event.target.files[0])}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6} sm={6}>
-              <Form.Group controlId="formStatus" className="mb-3">
-                <Form.Label>Status</Form.Label>
-                <Form.Select
-                  value={status}
-                  onChange={(event) => setStatus(event.target.value)}
-                >
-                  <option value="">Select Status</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </Form.Select>
-              </Form.Group>
-            </Col>
-          </Row>
-          <Button
-            variant="primary"
-            className="me-1"
-            type="submit"
-            disabled={loading || !isValid}
-          >
-            Add
-          </Button>
-        </form>
+        <Card>
+          <Card.Body>
+            <form onSubmit={handleSubmit(addUser)}>
+              {Object.keys(errors).length > 0 && (
+                <Alert variant="danger">
+                  <ul className="mb-0">
+                    {Object.values(errors).map((err, index) => (
+                      <li key={index}>{err.message}</li>
+                    ))}
+                  </ul>
+                </Alert>
+              )}
+              {message && message.status ? (
+                <Alert variant="success">{message.message}</Alert>
+              ) : message && !message.status ? (
+                <Alert variant="danger">{message.message}</Alert>
+              ) : null}
+              <Row>
+                <Col md={6} sm={6}>
+                  <Form.Group controlId="formName" className="mb-3">
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      className={errors.name ? "border border-danger" : null}
+                      {...register("name", {
+                        required: "Name is required.",
+                        maxLength: {
+                          value: 50,
+                          message: "Name must not exceed 50 characters.",
+                        },
+                      })}
+                      onInput={(e) => {
+                        e.target.value = e.target.value.replace(
+                          /[^A-Za-z\s]/g,
+                          "",
+                        );
+                      }}
+                    />
+                    {errors.name && (
+                      <span
+                        className="text-danger"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {errors.name.message}
+                      </span>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col md={6} sm={6}>
+                  <Form.Group controlId="formEmail" className="mb-3">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      className={errors.email ? "border border-danger" : null}
+                      {...register("email", {
+                        required: "Email is required.",
+                        pattern: {
+                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                          message: "Invalid email format.",
+                        },
+                        maxLength: {
+                          value: 100,
+                          message: "Email must not exceed 100 characters.",
+                        },
+                      })}
+                      onInput={(e) => {
+                        e.target.value = e.target.value.replace(
+                          /[^A-Za-z0-9@.\-\_]/g,
+                          "",
+                        );
+                      }}
+                    />
+                    {errors.email && (
+                      <span
+                        className="text-danger"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {errors.email.message}
+                      </span>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col md={6} sm={6}>
+                  <Form.Group controlId="formGender" className="mb-3">
+                    <Form.Label>Gender</Form.Label>
+                    <Form.Select
+                      className={errors.gender ? "border border-danger" : null}
+                      {...register("gender", {
+                        required: "Gender is required.",
+                      })}
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </Form.Select>
+                    {errors.gender && (
+                      <span
+                        className="text-danger"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {errors.gender.message}
+                      </span>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col md={6} sm={6}>
+                  <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Label>Photo</Form.Label>
+                    <InputGroup className="mb-3">
+                      <Form.Control
+                        type="file"
+                        className={errors.photo ? "border border-danger" : null}
+                        accept="image/*"
+                        {...register("photo", {
+                          required: "Photo is required.",
+                          validate: {
+                            isImage: (files) =>
+                              files[0]?.type.startsWith("image/") ||
+                              "Only image files allowed.",
+                            maxSize: (files) =>
+                              files[0]?.size < 1 * 1024 * 1024 ||
+                              "Max size is 1MB.",
+                          },
+                        })}
+                        onChange={(e) =>
+                          setPreview(URL.createObjectURL(e.target.files[0]))
+                        }
+                      />
+                      <Button
+                        disabled={preview === null ? true : false}
+                        onClick={() => {
+                          setPreview(null);
+                          resetField("photo");
+                        }}
+                        variant="dark"
+                        id="button-addon2"
+                      >
+                        Remove
+                      </Button>
+                    </InputGroup>
+                    {errors.photo && (
+                      <span
+                        className="text-danger"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {errors.photo.message}
+                      </span>
+                    )}
+                  </Form.Group>
+                  {preview && <img src={preview} width="100" />}
+                </Col>
+                <Col md={6} sm={6}>
+                  <Form.Group controlId="formStatus" className="mb-3">
+                    <Form.Label>Status</Form.Label>
+                    <Form.Select
+                      className={errors.status ? "border border-danger" : null}
+                      {...register("status", {
+                        required: "Status is required.",
+                      })}
+                    >
+                      <option value="">Select Status</option>
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                    </Form.Select>
+                    {errors.status && (
+                      <span
+                        className="text-danger"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {errors.status.message}
+                      </span>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Button
+                variant="primary"
+                className="me-1"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? "Submitting" : "Submit"}
+              </Button>
+              <Button variant="danger" type="reset" className="me-1">
+                Reset
+              </Button>
+              {isValid ? (
+                <span className="text-success">
+                  All fields are filled properly.
+                </span>
+              ) : (
+                <span className="text-secondary">
+                  Please fill all fields properly.
+                </span>
+              )}
+            </form>
+          </Card.Body>
+        </Card>
       </Container>
     </>
   );
