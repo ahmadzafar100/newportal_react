@@ -1,4 +1,4 @@
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faEye, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -10,7 +10,9 @@ import {
   FloatingLabel,
   Form,
   InputGroup,
+  OverlayTrigger,
   Row,
+  Tooltip,
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
@@ -18,6 +20,7 @@ const AddUserWithPhoto = () => {
   const [loading, setLoading] = useState(false);
   const [errorData, setErrorData] = useState("");
   const [message, setMessage] = useState("");
+  const [emailMessage, setEmailMessage] = useState("");
   const [preview, setPreview] = useState(null);
 
   const {
@@ -37,6 +40,22 @@ const AddUserWithPhoto = () => {
     else if (errors.gender) setFocus("gender");
   }, [errors]);
 
+  const checkEmail = async (email) => {
+    try {
+      const url = `http://localhost/testapi/check_email.php?email=${email}`;
+      let response = await fetch(url);
+      let data = await response.json();
+      if (response.ok) {
+        // console.log(data);
+        setEmailMessage(data);
+      }
+    } catch (error) {
+      console.error("Network Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const addUser = async (data, e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -50,7 +69,7 @@ const AddUserWithPhoto = () => {
       setLoading(true);
       const url = "http://localhost/testapi/add_user.php";
       const urlIp = "http://192.168.1.5/testapi/add_user.php";
-      let response = await fetch(urlIp, {
+      let response = await fetch(url, {
         method: "POST",
         /* headers: {
           "Content-Type": "application/json",
@@ -60,6 +79,7 @@ const AddUserWithPhoto = () => {
       let data = await response.json();
       if (response.ok) {
         if (data.status) {
+          // console.log(data);
           reset();
           setPreview(null);
           setMessage(data);
@@ -104,7 +124,7 @@ const AddUserWithPhoto = () => {
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      className={errors.name ? "border border-danger" : null}
+                      className={errors.name ? "is-invalid" : null}
                       {...register("name", {
                         required: "Name is required.",
                         maxLength: {
@@ -136,7 +156,7 @@ const AddUserWithPhoto = () => {
                     </Form.Label>
                     <Form.Control
                       type="email"
-                      className={errors.email ? "border border-danger" : null}
+                      className={errors.email ? "is-invalid" : null}
                       {...register("email", {
                         required: "Email is required.",
                         pattern: {
@@ -154,6 +174,7 @@ const AddUserWithPhoto = () => {
                           "",
                         );
                       }}
+                      onBlur={(e) => checkEmail(e.target.value)}
                     />
                     {errors.email && (
                       <span
@@ -163,6 +184,14 @@ const AddUserWithPhoto = () => {
                         {errors.email.message}
                       </span>
                     )}
+                    <span
+                      className={`d-block ${
+                        emailMessage.status ? "text-success" : "text-danger"
+                      }`}
+                      style={{ fontSize: "14px" }}
+                    >
+                      {emailMessage.message}
+                    </span>
                   </Form.Group>
                 </Col>
                 <Col md={4} sm={6}>
@@ -171,7 +200,7 @@ const AddUserWithPhoto = () => {
                       Gender<span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Select
-                      className={errors.gender ? "border border-danger" : null}
+                      className={errors.gender ? "is-invalid" : null}
                       {...register("gender", {
                         required: "Gender is required.",
                       })}
@@ -198,7 +227,7 @@ const AddUserWithPhoto = () => {
                     <InputGroup>
                       <Form.Control
                         type="file"
-                        className={errors.photo ? "border border-danger" : null}
+                        className={errors.photo ? "is-invalid" : null}
                         accept="image/*"
                         {...register("photo", {
                           required: "Photo is required.",
@@ -217,24 +246,34 @@ const AddUserWithPhoto = () => {
                       />
                       {preview !== null ? (
                         <>
-                          <Button
-                            variant="info"
-                            href={preview}
-                            target="_blank"
-                            rel="noreferrer"
+                          <OverlayTrigger
+                            placement="bottom"
+                            overlay={<Tooltip>Preview</Tooltip>}
                           >
-                            Preview
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              setPreview(null);
-                              resetField("photo");
-                            }}
-                            variant="dark"
-                            id="button-addon2"
+                            <Button
+                              variant="info"
+                              href={preview}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <FontAwesomeIcon icon={faEye} />
+                            </Button>
+                          </OverlayTrigger>
+                          <OverlayTrigger
+                            placement="bottom"
+                            overlay={<Tooltip>Remove</Tooltip>}
                           >
-                            Remove
-                          </Button>
+                            <Button
+                              onClick={() => {
+                                setPreview(null);
+                                resetField("photo");
+                              }}
+                              variant="dark"
+                              id="button-addon2"
+                            >
+                              <FontAwesomeIcon icon={faTimes} />
+                            </Button>
+                          </OverlayTrigger>
                         </>
                       ) : null}
                     </InputGroup>
@@ -254,7 +293,7 @@ const AddUserWithPhoto = () => {
                       Status<span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Select
-                      className={errors.status ? "border border-danger" : null}
+                      className={errors.status ? "is-invalid" : null}
                       {...register("status", {
                         required: "Status is required.",
                       })}
