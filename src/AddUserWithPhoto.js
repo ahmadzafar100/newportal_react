@@ -51,8 +51,6 @@ const AddUserWithPhoto = () => {
       }
     } catch (error) {
       console.error("Network Error:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
