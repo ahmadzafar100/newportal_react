@@ -33,11 +33,14 @@ const Login = () => {
 
   const userLogin = async (data, e) => {
     try {
-      //   console.log(data);
+      console.log(data.email);
       e.preventDefault();
       const url = "http://localhost/testapi/login.php";
       let response = await fetch(url, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       });
       let result = await response.json();
