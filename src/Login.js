@@ -10,10 +10,12 @@ import {
   Row,
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { Navigate } from "react-router";
+import { NavLink, useLocation, useNavigate } from "react-router";
 
-const Login = () => {
+const Login = ({ setUser }) => {
   const [message, setMessage] = useState(null);
+  let navigate = useNavigate();
+  const location = useLocation();
 
   const {
     register,
@@ -33,23 +35,34 @@ const Login = () => {
 
   const userLogin = async (data, e) => {
     try {
+<<<<<<< HEAD
       console.log(data.email);
+=======
+>>>>>>> ce365587bf97a40e540c71860ffede6c5e17d47d
       e.preventDefault();
+      const formData = new FormData();
+      formData.append("email", data.email);
+      formData.append("password", data.password);
       const url = "http://localhost/testapi/login.php";
       let response = await fetch(url, {
         method: "POST",
+<<<<<<< HEAD
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+=======
+        body: formData,
+>>>>>>> ce365587bf97a40e540c71860ffede6c5e17d47d
       });
       let result = await response.json();
       if (response.ok) {
         setMessage(result);
-        console.log(result);
+        // console.log(result);
         if (result.status) {
           localStorage.setItem("user", JSON.stringify(result.data));
-          Navigate("/dashboard");
+          setUser(result.data);
+          navigate("/dashboard");
         }
       }
     } catch (error) {
@@ -66,12 +79,15 @@ const Login = () => {
                 LOGIN
               </Card.Header>
               <Card.Body>
+                {location.state?.message && (
+                  <Alert variant="danger">{location.state.message}</Alert>
+                )}
                 {message && message.status ? (
                   <Alert variant="success">{message.message}</Alert>
                 ) : message && !message.status ? (
                   <Alert variant="danger">{message.message}</Alert>
                 ) : null}
-                <Form onSubmit={handleSubmit(userLogin)}>
+                <form onSubmit={handleSubmit(userLogin)}>
                   <Form.Group className="mb-3">
                     <FloatingLabel
                       controlId="floatingInput"
@@ -142,12 +158,15 @@ const Login = () => {
                       </span>
                     )}
                   </Form.Group>
-                  <div className="d-grid gap-2">
+                  <div className="d-grid gap-2 mb-3">
                     <Button variant="primary" type="submit" size="lg">
                       Login
                     </Button>
                   </div>
-                </Form>
+                  <NavLink variant="link" to="/">
+                    New User? Register Here...
+                  </NavLink>
+                </form>
               </Card.Body>
             </Card>
           </Col>
