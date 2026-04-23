@@ -16,7 +16,7 @@ import {
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
-const AddUserWithPhoto = () => {
+const AddUserWithPhoto = (props) => {
   const [loading, setLoading] = useState(false);
   const [errorData, setErrorData] = useState("");
   const [message, setMessage] = useState("");

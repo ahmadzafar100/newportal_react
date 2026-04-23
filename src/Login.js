@@ -10,10 +10,11 @@ import {
   Row,
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { Navigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 
-const Login = () => {
+const Login = ({ setUser }) => {
   const [message, setMessage] = useState(null);
+  let navigate = useNavigate();
 
   const {
     register,
@@ -33,20 +34,23 @@ const Login = () => {
 
   const userLogin = async (data, e) => {
     try {
-      //   console.log(data);
       e.preventDefault();
+      const formData = new FormData();
+      formData.append("email", data.email);
+      formData.append("password", data.password);
       const url = "http://localhost/testapi/login.php";
       let response = await fetch(url, {
         method: "POST",
-        body: JSON.stringify(data),
+        body: formData,
       });
       let result = await response.json();
       if (response.ok) {
         setMessage(result);
-        console.log(result);
+        // console.log(result);
         if (result.status) {
           localStorage.setItem("user", JSON.stringify(result.data));
-          Navigate("/dashboard");
+          setUser(result.data);
+          navigate("/dashboard");
         }
       }
     } catch (error) {
@@ -68,7 +72,7 @@ const Login = () => {
                 ) : message && !message.status ? (
                   <Alert variant="danger">{message.message}</Alert>
                 ) : null}
-                <Form onSubmit={handleSubmit(userLogin)}>
+                <form onSubmit={handleSubmit(userLogin)}>
                   <Form.Group className="mb-3">
                     <FloatingLabel
                       controlId="floatingInput"
@@ -139,12 +143,15 @@ const Login = () => {
                       </span>
                     )}
                   </Form.Group>
-                  <div className="d-grid gap-2">
+                  <div className="d-grid gap-2 mb-3">
                     <Button variant="primary" type="submit" size="lg">
                       Login
                     </Button>
                   </div>
-                </Form>
+                  <NavLink variant="link" to="/">
+                    New User? Register Here...
+                  </NavLink>
+                </form>
               </Card.Body>
             </Card>
           </Col>
