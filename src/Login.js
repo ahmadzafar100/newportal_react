@@ -10,11 +10,12 @@ import {
   Row,
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink, useLocation, useNavigate } from "react-router";
 
 const Login = ({ setUser }) => {
   const [message, setMessage] = useState(null);
   let navigate = useNavigate();
+  const location = useLocation();
 
   const {
     register,
@@ -67,6 +68,9 @@ const Login = ({ setUser }) => {
                 LOGIN
               </Card.Header>
               <Card.Body>
+                {location.state?.message && (
+                  <Alert variant="danger">{location.state.message}</Alert>
+                )}
                 {message && message.status ? (
                   <Alert variant="success">{message.message}</Alert>
                 ) : message && !message.status ? (

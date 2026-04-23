@@ -4,6 +4,11 @@ import { Link, useNavigate } from "react-router";
 
 const Menu = ({ user, setUser }) => {
   let navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/login", { replace: true }); // important
+  };
   return (
     <>
       <Navbar bg="dark" data-bs-theme="dark">
@@ -21,15 +26,7 @@ const Menu = ({ user, setUser }) => {
                 <Nav.Link as={Link} to="/dashboard">
                   Dashboard
                 </Nav.Link>
-                <Nav.Link
-                  role="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    localStorage.removeItem("user");
-                    setUser(null);
-                    navigate("/login", { replace: true });
-                  }}
-                >
+                <Nav.Link role="button" onClick={handleLogout}>
                   Logout
                 </Nav.Link>
               </>
