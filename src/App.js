@@ -29,7 +29,7 @@ function App() {
     const now = Date.now();
     const diff = now - loginTime;
 
-    return diff > 120000; // 2 minutes
+    return diff > 600000; // 10 minutes
   };
 
   useEffect(() => {
@@ -38,7 +38,6 @@ function App() {
         localStorage.removeItem("user");
         localStorage.removeItem("loginTime");
 
-        // ⚠️ IMPORTANT: only navigate if not already on login
         if (window.location.pathname !== "/login") {
           navigate("/login", {
             replace: true,

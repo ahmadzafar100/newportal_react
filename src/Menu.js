@@ -18,13 +18,13 @@ const Menu = ({ user, setUser }) => {
             <Nav.Link as={Link} to="/">
               Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/crud">
-              CRUD
-            </Nav.Link>
             {user ? (
               <>
                 <Nav.Link as={Link} to="/dashboard">
                   Dashboard
+                </Nav.Link>
+                <Nav.Link as={Link} to="/crud">
+                  CRUD
                 </Nav.Link>
                 <Nav.Link role="button" onClick={handleLogout}>
                   Logout
