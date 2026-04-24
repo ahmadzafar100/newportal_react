@@ -1,3 +1,5 @@
+import { faSignIn } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -16,6 +18,7 @@ const Login = ({ setUser }) => {
   const [message, setMessage] = useState(null);
   let navigate = useNavigate();
   const location = useLocation();
+  const loginTime = Date.now();
 
   const {
     register,
@@ -50,6 +53,7 @@ const Login = ({ setUser }) => {
         // console.log(result);
         if (result.status) {
           localStorage.setItem("user", JSON.stringify(result.data));
+          localStorage.setItem("loginTime", loginTime);
           setUser(result.data);
           navigate("/dashboard");
         }
@@ -65,7 +69,7 @@ const Login = ({ setUser }) => {
           <Col md={5} sm={6} className="mx-auto">
             <Card>
               <Card.Header as={"h3"} className="bg-dark text-white">
-                LOGIN
+                LOGIN <FontAwesomeIcon icon={faSignIn} />
               </Card.Header>
               <Card.Body>
                 {location.state?.message && (
