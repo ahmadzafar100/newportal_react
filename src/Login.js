@@ -72,8 +72,10 @@ const Login = ({ setUser }) => {
         <Row>
           <Col md={5} sm={6} className="mx-auto">
             <Card>
-              <Card.Header as={"h3"} className="bg-dark text-white">
-                LOGIN <FontAwesomeIcon icon={faSignIn} />
+              <Card.Header as={"h5"} className="bg-dark text-white">
+                <strong>
+                  LOGIN <FontAwesomeIcon icon={faSignIn} />
+                </strong>
               </Card.Header>
               <Card.Body>
                 {location.state?.message && (

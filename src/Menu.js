@@ -1,13 +1,27 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const Menu = ({ user, setUser }) => {
   let navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-    navigate("/login", { replace: true }); // important
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You really want to logout!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      allowOutsideClick: false,
+      confirmButtonText: "Logout",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("user");
+        setUser(null);
+        navigate("/login", { replace: true }); // important
+      }
+    });
   };
   return (
     <>
