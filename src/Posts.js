@@ -3,9 +3,11 @@ import {
   Card,
   Col,
   Container,
+  OverlayTrigger,
   Pagination,
   Row,
   Spinner,
+  Tooltip,
 } from "react-bootstrap";
 
 const Posts = () => {
@@ -71,22 +73,42 @@ const Posts = () => {
         </Row>
         {!loading ? (
           <Pagination>
-            <Pagination.First
-              onClick={() => setPage(1)}
-              disabled={page === 1}
-            />
-            <Pagination.Prev
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            />
-            <Pagination.Next
-              onClick={() => setPage(page + 1)}
-              disabled={postData.length < 12 || page === totalPages}
-            />
-            <Pagination.Last
-              onClick={() => setPage(totalPages)}
-              disabled={postData.length < 12 || page === totalPages}
-            />
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip>First</Tooltip>}
+            >
+              <Pagination.First
+                onClick={() => setPage(1)}
+                disabled={page === 1}
+              />
+            </OverlayTrigger>
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip>Previous</Tooltip>}
+            >
+              <Pagination.Prev
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+              />
+            </OverlayTrigger>
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip>Next</Tooltip>}
+            >
+              <Pagination.Next
+                onClick={() => setPage(page + 1)}
+                disabled={postData.length < 12 || page === totalPages}
+              />
+            </OverlayTrigger>
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip>Last</Tooltip>}
+            >
+              <Pagination.Last
+                onClick={() => setPage(totalPages)}
+                disabled={postData.length < 12 || page === totalPages}
+              />
+            </OverlayTrigger>
           </Pagination>
         ) : null}
       </Container>
