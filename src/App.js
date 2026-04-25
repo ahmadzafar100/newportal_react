@@ -6,6 +6,7 @@ import Login from "./Login";
 import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import Menu from "./Menu";
+import Posts from "./Posts";
 
 function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
@@ -59,6 +60,7 @@ function App() {
         <Route element={<ProtectedRoute user={user} />}>
           <Route path="/crud" element={<Users user={user} />} />
           <Route path="/dashboard" element={<Dashboard user={user} />} />
+          <Route path="/posts" element={<Posts user={user} />} />
         </Route>
         <Route index element={<AddUserWithPhoto />} />
         <Route path="/login" element={<Login setUser={setUser} />} />

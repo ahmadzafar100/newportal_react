@@ -42,29 +42,14 @@ const Login = ({ setUser }) => {
 
   const userLogin = async (data, e) => {
     try {
-<<<<<<< HEAD
-      console.log(data.email);
-=======
->>>>>>> ce365587bf97a40e540c71860ffede6c5e17d47d
       e.preventDefault();
-      if (!captchaValid) {
-        alert("Captcha incorrect");
-        return;
-      }
       const formData = new FormData();
       formData.append("email", data.email);
       formData.append("password", data.password);
       const url = "http://localhost/testapi/login.php";
       let response = await fetch(url, {
         method: "POST",
-<<<<<<< HEAD
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-=======
         body: formData,
->>>>>>> ce365587bf97a40e540c71860ffede6c5e17d47d
       });
       let result = await response.json();
       if (response.ok) {
@@ -177,6 +162,7 @@ const Login = ({ setUser }) => {
                         setValue={setValue}
                         onValidate={setCaptchaValid}
                         watch={watch}
+                        errors={errors}
                       />
                     </div>
                     {errors.captcha && (
@@ -189,7 +175,12 @@ const Login = ({ setUser }) => {
                     )}
                   </Form.Group>
                   <div className="d-grid gap-2 mb-3">
-                    <Button variant="primary" type="submit" size="lg">
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      size="lg"
+                      disabled={!isValid}
+                    >
                       Login
                     </Button>
                   </div>

@@ -1,9 +1,15 @@
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { Button, FloatingLabel, Form } from "react-bootstrap";
+import {
+  Button,
+  FloatingLabel,
+  Form,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 
-function Captcha({ onValidate, register, setValue, watch }) {
+function Captcha({ onValidate, register, setValue, watch, errors }) {
   const [captchaText, setCaptchaText] = useState("");
   const [userInput, setUserInput] = useState("");
   const [captchaImage, setCaptchaImage] = useState(null);
@@ -51,14 +57,19 @@ function Captcha({ onValidate, register, setValue, watch }) {
     <div>
       <img src={captchaImage} alt="captcha" />
 
-      <Button variant="secondary" onClick={generateCaptcha} className="ms-2">
-        <FontAwesomeIcon icon={faRefresh} />
-      </Button>
+      <OverlayTrigger
+        placement="bottom"
+        overlay={<Tooltip>Refresh Captcha</Tooltip>}
+      >
+        <Button variant="secondary" onClick={generateCaptcha} className="ms-2">
+          <FontAwesomeIcon icon={faRefresh} />
+        </Button>
+      </OverlayTrigger>
 
       <FloatingLabel controlId="floatingCaptcha" label="Captcha">
         <Form.Control
           type="text"
-          className="mt-2"
+          className={`mt-2 ${errors.captcha ? "is-invalid" : null}`}
           placeholder="Captcha"
           {...register("captcha", {
             required: "Captcha is required.",

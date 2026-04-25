@@ -23,6 +23,9 @@ const Menu = ({ user, setUser }) => {
                 <Nav.Link as={Link} to="/dashboard">
                   Dashboard
                 </Nav.Link>
+                <Nav.Link as={Link} to="/posts">
+                  Posts
+                </Nav.Link>
                 <Nav.Link as={Link} to="/crud">
                   CRUD
                 </Nav.Link>
