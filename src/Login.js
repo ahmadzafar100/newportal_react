@@ -1,3 +1,5 @@
+import { faSignIn } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -11,11 +13,14 @@ import {
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { NavLink, useLocation, useNavigate } from "react-router";
+import Captcha from "./Captcha";
 
 const Login = ({ setUser }) => {
   const [message, setMessage] = useState(null);
   let navigate = useNavigate();
   const location = useLocation();
+  const loginTime = Date.now();
+  const [captchaValid, setCaptchaValid] = useState(false);
 
   const {
     register,
@@ -23,6 +28,8 @@ const Login = ({ setUser }) => {
     reset,
     resetField,
     setFocus,
+    setValue,
+    watch,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange", // 👈 important for real-time validation
@@ -40,6 +47,10 @@ const Login = ({ setUser }) => {
 =======
 >>>>>>> ce365587bf97a40e540c71860ffede6c5e17d47d
       e.preventDefault();
+      if (!captchaValid) {
+        alert("Captcha incorrect");
+        return;
+      }
       const formData = new FormData();
       formData.append("email", data.email);
       formData.append("password", data.password);
@@ -61,6 +72,7 @@ const Login = ({ setUser }) => {
         // console.log(result);
         if (result.status) {
           localStorage.setItem("user", JSON.stringify(result.data));
+          localStorage.setItem("loginTime", loginTime);
           setUser(result.data);
           navigate("/dashboard");
         }
@@ -76,7 +88,7 @@ const Login = ({ setUser }) => {
           <Col md={5} sm={6} className="mx-auto">
             <Card>
               <Card.Header as={"h3"} className="bg-dark text-white">
-                LOGIN
+                LOGIN <FontAwesomeIcon icon={faSignIn} />
               </Card.Header>
               <Card.Body>
                 {location.state?.message && (
@@ -155,6 +167,24 @@ const Login = ({ setUser }) => {
                         style={{ fontSize: "14px" }}
                       >
                         {errors.password.message}
+                      </span>
+                    )}
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <div className="text-center">
+                      <Captcha
+                        register={register}
+                        setValue={setValue}
+                        onValidate={setCaptchaValid}
+                        watch={watch}
+                      />
+                    </div>
+                    {errors.captcha && (
+                      <span
+                        className="text-danger"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {errors.captcha.message}
                       </span>
                     )}
                   </Form.Group>
