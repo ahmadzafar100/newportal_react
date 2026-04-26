@@ -70,12 +70,16 @@ function Captcha({ onValidate, register, setValue, watch, errors }) {
         <Form.Control
           type="text"
           className={`mt-2 ${errors.captcha ? "is-invalid" : null}`}
+          maxLength={6}
           placeholder="Captcha"
           {...register("captcha", {
             required: "Captcha is required.",
             validate: (value) =>
               value.toUpperCase() === captchaText || "Captcha does not match.",
           })}
+          onInput={(e) => {
+            e.target.value = e.target.value.replace(/[^A-Za-z0-9\s]/g, "");
+          }}
         />
       </FloatingLabel>
     </div>

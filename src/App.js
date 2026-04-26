@@ -7,6 +7,7 @@ import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import Menu from "./Menu";
 import Posts from "./Posts";
+import ChangePassword from "./ChangePassword";
 
 function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
@@ -38,6 +39,7 @@ function App() {
       if (isSessionExpired()) {
         localStorage.removeItem("user");
         localStorage.removeItem("loginTime");
+        setUser(null);
 
         if (window.location.pathname !== "/login") {
           navigate("/login", {
@@ -61,6 +63,10 @@ function App() {
           <Route path="/crud" element={<Users user={user} />} />
           <Route path="/dashboard" element={<Dashboard user={user} />} />
           <Route path="/posts" element={<Posts user={user} />} />
+          <Route
+            path="/change-password"
+            element={<ChangePassword user={user} setUser={setUser} />}
+          />
         </Route>
         <Route index element={<AddUserWithPhoto />} />
         <Route path="/login" element={<Login setUser={setUser} />} />

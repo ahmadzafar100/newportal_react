@@ -132,12 +132,13 @@ const Login = ({ setUser }) => {
                       <Form.Control
                         type="password"
                         placeholder="Password"
+                        maxLength={15}
                         className={errors.password ? "is-invalid" : null}
                         {...register("password", {
                           required: "Password is required.",
                           maxLength: {
                             value: 15,
-                            message: "password must not exceed 100 characters.",
+                            message: "Password must not exceed 15 characters.",
                           },
                         })}
                         onInput={(e) => {
