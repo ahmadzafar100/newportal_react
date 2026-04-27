@@ -38,11 +38,11 @@ const ChangePassword = ({ user, setUser }) => {
     try {
       e.preventDefault();
       const formData = new FormData();
-      formData.append("oldPassword", data.email);
-      formData.append("newPassword", data.password);
-      formData.append("confirmPassword", data.password);
+      formData.append("old_password", data.oldPassword);
+      formData.append("new_password", data.newPassword);
+      formData.append("confirm_password", data.confirmPassword);
       formData.append("_method", "PUT");
-      const url = "http://localhost/testapi/change_password.php";
+      const url = `http://localhost/testapi/change_password.php?id=${user.id}`;
       let response = await fetch(url, {
         method: "POST",
         body: formData,

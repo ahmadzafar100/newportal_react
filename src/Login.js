@@ -14,10 +14,11 @@ import {
 import { useForm } from "react-hook-form";
 import { NavLink, useLocation, useNavigate } from "react-router";
 import Captcha from "./Captcha";
+import Toaster from "./Toaster";
 
 const Login = ({ setUser }) => {
   const [message, setMessage] = useState(null);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
   const loginTime = Date.now();
   const [captchaValid, setCaptchaValid] = useState(false);
@@ -66,8 +67,25 @@ const Login = ({ setUser }) => {
       console.error("Error", error);
     }
   };
+  const [show, setShow] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [title, setTitle] = useState("");
+
+  useEffect(() => {
+    const toastData = location.state?.toast;
+
+    if (toastData) {
+      setMsg(toastData.message);
+      setTitle(toastData.title);
+      setShow(true); // 🔥 show toast
+
+      // clear state after showing
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, []);
   return (
     <>
+      <Toaster show={show} setShow={setShow} title={title} msg={msg} />
       <Container className="py-5">
         <Row>
           <Col md={5} sm={6} className="mx-auto">
@@ -86,7 +104,7 @@ const Login = ({ setUser }) => {
                 ) : message && !message.status ? (
                   <Alert variant="danger">{message.message}</Alert>
                 ) : null}
-                <form onSubmit={handleSubmit(userLogin)}>
+                <form onSubmit={handleSubmit(userLogin)} autoComplete="off">
                   <Form.Group className="mb-3">
                     <FloatingLabel
                       controlId="floatingInput"

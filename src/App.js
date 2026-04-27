@@ -13,15 +13,7 @@ function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   let navigate = useNavigate();
   function ProtectedRoute({ user }) {
-    return user ? (
-      <Outlet />
-    ) : (
-      <Navigate
-        to="/login"
-        state={{ message: "Session expired. Please login again." }}
-        replace
-      />
-    );
+    return user ? <Outlet /> : <Navigate to="/login" replace />;
   }
   const isSessionExpired = () => {
     const loginTime = localStorage.getItem("loginTime");

@@ -19,7 +19,16 @@ const Menu = ({ user, setUser }) => {
       if (result.isConfirmed) {
         localStorage.removeItem("user");
         setUser(null);
-        navigate("/login", { replace: true }); // important
+        // navigate("/login", { replace: true }); // important
+        navigate("/login", {
+          replace: true,
+          state: {
+            toast: {
+              title: "Success",
+              message: "Logged out successfully",
+            },
+          },
+        });
       }
     });
   };
