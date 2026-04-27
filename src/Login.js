@@ -16,7 +16,7 @@ import { NavLink, useLocation, useNavigate } from "react-router";
 import Captcha from "./Captcha";
 import Toaster from "./Toaster";
 
-const Login = ({ setUser }) => {
+const Login = ({ user, setUser }) => {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -81,6 +81,10 @@ const Login = ({ setUser }) => {
 
       // clear state after showing
       navigate(location.pathname, { replace: true, state: {} });
+    }
+
+    if (user) {
+      navigate("/");
     }
   }, []);
   return (

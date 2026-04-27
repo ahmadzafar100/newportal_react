@@ -61,7 +61,10 @@ function App() {
           />
         </Route>
         <Route index element={<AddUserWithPhoto />} />
-        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route
+          path="/login"
+          element={<Login user={user} setUser={setUser} />}
+        />
       </Routes>
     </>
   );
