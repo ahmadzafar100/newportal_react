@@ -237,7 +237,7 @@ const Login = ({ user, setUser }) => {
                       Login
                     </Button>
                   </div>
-                  <NavLink variant="link" to="/">
+                  <NavLink variant="link" to="/signup">
                     New User? Register Here...
                   </NavLink>
                 </form>

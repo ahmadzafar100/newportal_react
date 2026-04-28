@@ -58,10 +58,10 @@ const Menu = ({ user, setUser }) => {
               </>
             ) : (
               <>
-                <Nav.Link as={Link} to="/">
-                  Home
+                <Nav.Link as={Link} to="/signup">
+                  Signup
                 </Nav.Link>
-                <Nav.Link as={Link} to="/login">
+                <Nav.Link as={Link} to="/">
                   Login
                 </Nav.Link>
               </>

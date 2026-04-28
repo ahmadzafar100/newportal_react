@@ -29,7 +29,7 @@ function App() {
       if (isExpiring) return null;
       return (
         <Navigate
-          to="/login"
+          to="/"
           replace
           state={
             existingToast
@@ -37,7 +37,7 @@ function App() {
               : {
                   toast: {
                     title: "Warning",
-                    message: "Please login first",
+                    message: "Please login first.",
                   },
                 }
           }
@@ -67,15 +67,15 @@ function App() {
         setUser(null);
 
         if (
-          window.location.pathname !== "/login" &&
-          window.location.pathname !== "/"
+          window.location.pathname !== "/" &&
+          window.location.pathname !== "/signup"
         ) {
-          navigate("/login", {
+          navigate("/", {
             replace: true,
             state: {
               toast: {
                 title: "Danger",
-                message: "Session expired.",
+                message: "Session expired. Please login again.",
               },
             },
           });
@@ -137,11 +137,8 @@ function App() {
             element={<ChangePassword user={user} setUser={setUser} />}
           />
         </Route>
-        <Route index element={<AddUserWithPhoto />} />
-        <Route
-          path="/login"
-          element={<Login user={user} setUser={setUser} />}
-        />
+        <Route path="/signup" element={<AddUserWithPhoto />} />
+        <Route index element={<Login user={user} setUser={setUser} />} />
       </Routes>
     </>
   );
