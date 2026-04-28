@@ -3,17 +3,49 @@ import Users from "./Users";
 import AddUserWithPhoto from "./AddUserWithPhoto";
 import Dashboard from "./Dashboard";
 import Login from "./Login";
-import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router";
+import {
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router";
 import { useEffect, useState } from "react";
 import Menu from "./Menu";
 import Posts from "./Posts";
 import ChangePassword from "./ChangePassword";
+import Toaster from "./Toaster";
 
 function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [isExpiring, setIsExpiring] = useState(false);
   let navigate = useNavigate();
+  let location = useLocation();
   function ProtectedRoute({ user }) {
-    return user ? <Outlet /> : <Navigate to="/login" replace />;
+    const existingToast = location.state?.toast;
+
+    if (!user) {
+      if (isExpiring) return null;
+      return (
+        <Navigate
+          to="/login"
+          replace
+          state={
+            existingToast
+              ? location.state // ✅ keep existing message
+              : {
+                  toast: {
+                    title: "Warning",
+                    message: "Please login first",
+                  },
+                }
+          }
+        />
+      );
+    }
+
+    return <Outlet />;
   }
   const isSessionExpired = () => {
     const loginTime = localStorage.getItem("loginTime");
@@ -23,12 +55,13 @@ function App() {
     const now = Date.now();
     const diff = now - loginTime;
 
-    return diff > 600000; // 10 minutes
+    return diff > 30000; // 10 minutes
   };
 
   useEffect(() => {
     const checkSession = () => {
       if (isSessionExpired()) {
+        setIsExpiring(true);
         localStorage.removeItem("user");
         localStorage.removeItem("loginTime");
         setUser(null);
@@ -36,7 +69,12 @@ function App() {
         if (window.location.pathname !== "/login") {
           navigate("/login", {
             replace: true,
-            state: { flash: "Session expired" },
+            state: {
+              toast: {
+                title: "Danger",
+                message: "Session expired.",
+              },
+            },
           });
         }
       }
@@ -47,11 +85,27 @@ function App() {
     const interval = setInterval(checkSession, 5000);
     return () => clearInterval(interval);
   }, [navigate]);
+  const [show, setShow] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [title, setTitle] = useState("");
+  useEffect(() => {
+    const toastData = location.state?.toast;
+
+    if (toastData) {
+      setMsg(toastData.message);
+      setTitle(toastData.title);
+      setShow(true); // 🔥 show toast
+
+      // clear state after showing
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state]);
   return (
     <>
+      <Toaster show={show} setShow={setShow} title={title} msg={msg} />
       <Menu user={user} setUser={setUser} />
       <Routes>
-        <Route element={<ProtectedRoute user={user} />}>
+        <Route element={<ProtectedRoute user={user} isExpiring={isExpiring} />}>
           <Route path="/crud" element={<Users user={user} />} />
           <Route path="/dashboard" element={<Dashboard user={user} />} />
           <Route path="/posts" element={<Posts user={user} />} />
@@ -61,7 +115,10 @@ function App() {
           />
         </Route>
         <Route index element={<AddUserWithPhoto />} />
-        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route
+          path="/login"
+          element={<Login user={user} setUser={setUser} />}
+        />
       </Routes>
     </>
   );

@@ -25,7 +25,7 @@ const Menu = ({ user, setUser }) => {
           state: {
             toast: {
               title: "Success",
-              message: "Logged out successfully",
+              message: "Logged out successfully.",
             },
           },
         });

@@ -16,7 +16,7 @@ import { NavLink, useLocation, useNavigate } from "react-router";
 import Captcha from "./Captcha";
 import Toaster from "./Toaster";
 
-const Login = ({ setUser }) => {
+const Login = ({ user, setUser }) => {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -71,7 +71,7 @@ const Login = ({ setUser }) => {
   const [msg, setMsg] = useState("");
   const [title, setTitle] = useState("");
 
-  useEffect(() => {
+  /* useEffect(() => {
     const toastData = location.state?.toast;
 
     if (toastData) {
@@ -82,10 +82,24 @@ const Login = ({ setUser }) => {
       // clear state after showing
       navigate(location.pathname, { replace: true, state: {} });
     }
+  }, [location.state]); */
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard", {
+        replace: true,
+        state: {
+          toast: {
+            title: "Success",
+            message: "Already logged in.",
+          },
+        },
+      });
+    }
   }, []);
   return (
     <>
-      <Toaster show={show} setShow={setShow} title={title} msg={msg} />
+      {/* <Toaster show={show} setShow={setShow} title={title} msg={msg} /> */}
       <Container className="py-5">
         <Row>
           <Col md={5} sm={6} className="mx-auto">

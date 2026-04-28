@@ -9,7 +9,13 @@ const Toaster = ({ show, setShow, title, msg }) => {
         position={"top-end"}
         style={{ zIndex: 1 }}
       >
-        <Toast show={show} onClose={() => setShow(false)} delay={5000} autohide>
+        <Toast
+          show={show}
+          onClose={() => setShow(false)}
+          bg={title.toLowerCase()}
+          delay={5000}
+          autohide
+        >
           <Toast.Header closeButton={true}>
             <img
               src="holder.js/20x20?text=%20"
@@ -19,7 +25,13 @@ const Toaster = ({ show, setShow, title, msg }) => {
             <strong className="me-auto">{title}</strong>
             {/* <small>11 mins ago</small> */}
           </Toast.Header>
-          <Toast.Body>{msg}</Toast.Body>
+          <Toast.Body
+            className={
+              (title === "Danger" || title === "Success") && "text-white"
+            }
+          >
+            {msg}
+          </Toast.Body>
         </Toast>
       </ToastContainer>
     </>
