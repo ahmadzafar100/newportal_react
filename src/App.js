@@ -66,7 +66,10 @@ function App() {
         localStorage.removeItem("loginTime");
         setUser(null);
 
-        if (window.location.pathname !== "/login") {
+        if (
+          window.location.pathname !== "/login" &&
+          window.location.pathname !== "/"
+        ) {
           navigate("/login", {
             replace: true,
             state: {
