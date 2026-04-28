@@ -54,13 +54,31 @@ const Login = ({ user, setUser }) => {
       });
       let result = await response.json();
       if (response.ok) {
-        setMessage(result);
+        // setMessage(result);
         // console.log(result);
         if (result.status) {
           localStorage.setItem("user", JSON.stringify(result.data));
           localStorage.setItem("loginTime", loginTime);
           setUser(result.data);
-          navigate("/dashboard");
+          navigate("/dashboard", {
+            replace: true,
+            state: {
+              toast: {
+                title: "Success",
+                message: "Logged in successfully.",
+              },
+            },
+          });
+        } else {
+          navigate("/login", {
+            replace: true,
+            state: {
+              toast: {
+                title: "Danger",
+                message: "Invalid Credentials.",
+              },
+            },
+          });
         }
       }
     } catch (error) {

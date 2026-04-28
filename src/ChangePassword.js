@@ -54,7 +54,15 @@ const ChangePassword = ({ user, setUser }) => {
         if (result.status) {
           localStorage.removeItem("user");
           setUser(null);
-          navigate("/login", { replace: true });
+          navigate("/login", {
+            replace: true,
+            state: {
+              toast: {
+                title: "Success",
+                message: "Password changed successfully. Please login again.",
+              },
+            },
+          });
         } else {
           setMessage(result);
         }

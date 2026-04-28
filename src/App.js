@@ -88,21 +88,41 @@ function App() {
   const [show, setShow] = useState(false);
   const [msg, setMsg] = useState("");
   const [title, setTitle] = useState("");
+  const [toasts, setToasts] = useState([]);
   useEffect(() => {
     const toastData = location.state?.toast;
 
     if (toastData) {
-      setMsg(toastData.message);
-      setTitle(toastData.title);
+      const id = Date.now(); // unique id
+      setToasts((prev) => [
+        ...prev,
+        {
+          id,
+          title: toastData.title,
+          message: toastData.message,
+          icon: toastData.icon,
+        },
+      ]);
       setShow(true); // 🔥 show toast
 
       // clear state after showing
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state]);
+
+  const removeToast = (id) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
   return (
     <>
-      <Toaster show={show} setShow={setShow} title={title} msg={msg} />
+      <Toaster
+        show={show}
+        setShow={setShow}
+        title={title}
+        msg={msg}
+        toasts={toasts}
+        removeToast={removeToast}
+      />
       <Menu user={user} setUser={setUser} />
       <Routes>
         <Route element={<ProtectedRoute user={user} isExpiring={isExpiring} />}>
