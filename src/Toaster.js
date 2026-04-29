@@ -23,7 +23,7 @@ const Toaster = ({ show, setShow, title, msg, toasts, removeToast }) => {
             key={toast.id}
             onClose={() => removeToast(toast.id)}
             bg={toast.title.toLowerCase()}
-            delay={5000}
+            delay={2500}
             autohide
           >
             <Toast.Header>

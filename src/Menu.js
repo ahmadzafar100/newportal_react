@@ -17,10 +17,9 @@ const Menu = ({ user, setUser }) => {
       confirmButtonText: "Logout",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        localStorage.removeItem("user");
+        localStorage.clear();
         setUser(null);
-        // navigate("/login", { replace: true }); // important
-        navigate("/login", {
+        navigate("/", {
           replace: true,
           state: {
             toast: {

@@ -59,6 +59,7 @@ const Login = ({ user, setUser }) => {
         if (result.status) {
           localStorage.setItem("user", JSON.stringify(result.data));
           localStorage.setItem("loginTime", loginTime);
+          localStorage.setItem("lastActivity", Date.now());
           setUser(result.data);
           navigate("/dashboard", {
             replace: true,
@@ -70,7 +71,7 @@ const Login = ({ user, setUser }) => {
             },
           });
         } else {
-          navigate("/login", {
+          navigate("/", {
             replace: true,
             state: {
               toast: {
