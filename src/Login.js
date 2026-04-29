@@ -54,13 +54,32 @@ const Login = ({ user, setUser }) => {
       });
       let result = await response.json();
       if (response.ok) {
-        setMessage(result);
+        // setMessage(result);
         // console.log(result);
         if (result.status) {
           localStorage.setItem("user", JSON.stringify(result.data));
           localStorage.setItem("loginTime", loginTime);
+          localStorage.setItem("lastActivity", Date.now());
           setUser(result.data);
-          navigate("/dashboard");
+          navigate("/dashboard", {
+            replace: true,
+            state: {
+              toast: {
+                title: "Success",
+                message: "Logged in successfully.",
+              },
+            },
+          });
+        } else {
+          navigate("/", {
+            replace: true,
+            state: {
+              toast: {
+                title: "Danger",
+                message: "Invalid Credentials.",
+              },
+            },
+          });
         }
       }
     } catch (error) {
@@ -71,7 +90,7 @@ const Login = ({ user, setUser }) => {
   const [msg, setMsg] = useState("");
   const [title, setTitle] = useState("");
 
-  useEffect(() => {
+  /* useEffect(() => {
     const toastData = location.state?.toast;
 
     if (toastData) {
@@ -82,14 +101,24 @@ const Login = ({ user, setUser }) => {
       // clear state after showing
       navigate(location.pathname, { replace: true, state: {} });
     }
+  }, [location.state]); */
 
+  useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate("/dashboard", {
+        replace: true,
+        state: {
+          toast: {
+            title: "Success",
+            message: "Already logged in.",
+          },
+        },
+      });
     }
   }, []);
   return (
     <>
-      <Toaster show={show} setShow={setShow} title={title} msg={msg} />
+      {/* <Toaster show={show} setShow={setShow} title={title} msg={msg} /> */}
       <Container className="py-5">
         <Row>
           <Col md={5} sm={6} className="mx-auto">
@@ -209,7 +238,7 @@ const Login = ({ user, setUser }) => {
                       Login
                     </Button>
                   </div>
-                  <NavLink variant="link" to="/">
+                  <NavLink variant="link" to="/signup">
                     New User? Register Here...
                   </NavLink>
                 </form>
