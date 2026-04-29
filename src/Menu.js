@@ -3,7 +3,7 @@ import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
-const Menu = ({ user, setUser }) => {
+const Menu = ({ user, setUser, setIsLoggingOut }) => {
   let navigate = useNavigate();
   const handleLogout = () => {
     Swal.fire({
@@ -17,6 +17,7 @@ const Menu = ({ user, setUser }) => {
       confirmButtonText: "Logout",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        setIsLoggingOut(true);
         localStorage.clear();
         setUser(null);
         navigate("/", {

@@ -21,6 +21,7 @@ function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const [isExpiring, setIsExpiring] = useState(false);
   const [warningShown, setWarningShown] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   let navigate = useNavigate();
   let location = useLocation();
   function ProtectedRoute({ user }) {
@@ -28,6 +29,7 @@ function App() {
 
     if (!user) {
       if (isExpiring) return null;
+      if (isLoggingOut) return null;
       return (
         <Navigate
           to="/"
@@ -198,7 +200,7 @@ function App() {
         toasts={toasts}
         removeToast={removeToast}
       />
-      <Menu user={user} setUser={setUser} />
+      <Menu user={user} setUser={setUser} setIsLoggingOut={setIsLoggingOut} />
       <Routes>
         <Route element={<ProtectedRoute user={user} isExpiring={isExpiring} />}>
           <Route path="/crud" element={<Users user={user} />} />
