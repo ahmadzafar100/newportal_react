@@ -178,6 +178,7 @@ function App() {
           title: toastData.title,
           message: toastData.message,
           icon: toastData.icon,
+          progress: 100, // 🔥 MUST
         },
       ]);
       setShow(true); // 🔥 show toast
