@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { Link, useNavigate } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
 const Menu = ({ user, setUser, setIsLoggingOut }) => {
@@ -40,16 +40,39 @@ const Menu = ({ user, setUser, setIsLoggingOut }) => {
           <Nav className="me-auto">
             {user ? (
               <>
-                <Nav.Link as={Link} to="/dashboard">
+                <Nav.Link
+                  as={NavLink}
+                  to="/dashboard"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                >
                   Dashboard
                 </Nav.Link>
-                <Nav.Link as={Link} to="/posts">
+                <Nav.Link
+                  as={NavLink}
+                  to="/posts"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                >
                   Posts
                 </Nav.Link>
-                <Nav.Link as={Link} to="/crud">
+                <Nav.Link
+                  as={NavLink}
+                  to="/crud"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                >
                   CRUD
                 </Nav.Link>
-                <Nav.Link as={Link} to="/change-password">
+                <Nav.Link
+                  as={NavLink}
+                  to="/data"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                >
+                  Data
+                </Nav.Link>
+                <Nav.Link
+                  as={NavLink}
+                  to="/change-password"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                >
                   Change Password
                 </Nav.Link>
                 <Nav.Link role="button" onClick={handleLogout}>
@@ -58,10 +81,18 @@ const Menu = ({ user, setUser, setIsLoggingOut }) => {
               </>
             ) : (
               <>
-                <Nav.Link as={Link} to="/signup">
+                <Nav.Link
+                  as={NavLink}
+                  to="/signup"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                >
                   Signup
                 </Nav.Link>
-                <Nav.Link as={Link} to="/">
+                <Nav.Link
+                  as={NavLink}
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                  to="/"
+                >
                   Login
                 </Nav.Link>
               </>
