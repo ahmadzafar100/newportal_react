@@ -17,6 +17,7 @@ import Posts from "./Posts";
 import ChangePassword from "./ChangePassword";
 import Toaster from "./Toaster";
 import Data from "./Data";
+import Page404 from "./Page404";
 
 function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
@@ -216,6 +217,7 @@ function App() {
         </Route>
         <Route path="/signup" element={<AddUserWithPhoto />} />
         <Route index element={<Login user={user} setUser={setUser} />} />
+        <Route path="*" element={<Page404 />} />
       </Routes>
     </>
   );
