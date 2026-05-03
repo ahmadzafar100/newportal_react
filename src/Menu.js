@@ -34,70 +34,86 @@ const Menu = ({ user, setUser, setIsLoggingOut }) => {
   };
   return (
     <>
-      <Navbar bg="dark" data-bs-theme="dark">
+      <Navbar
+        className="bg-body-tertiary"
+        bg="dark"
+        data-bs-theme="dark"
+        expand="lg"
+        sticky="top"
+      >
         <Container>
           <Navbar.Brand>React</Navbar.Brand>
-          <Nav className="me-auto">
-            {user ? (
-              <>
-                <Nav.Link
-                  as={NavLink}
-                  to="/dashboard"
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                >
-                  Dashboard
-                </Nav.Link>
-                <Nav.Link
-                  as={NavLink}
-                  to="/posts"
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                >
-                  Posts
-                </Nav.Link>
-                <Nav.Link
-                  as={NavLink}
-                  to="/crud"
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                >
-                  CRUD
-                </Nav.Link>
-                <Nav.Link
-                  as={NavLink}
-                  to="/data"
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                >
-                  Data
-                </Nav.Link>
-                <Nav.Link
-                  as={NavLink}
-                  to="/change-password"
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                >
-                  Change Password
-                </Nav.Link>
-                <Nav.Link role="button" onClick={handleLogout}>
-                  Logout
-                </Nav.Link>
-              </>
-            ) : (
-              <>
-                <Nav.Link
-                  as={NavLink}
-                  to="/signup"
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                >
-                  Signup
-                </Nav.Link>
-                <Nav.Link
-                  as={NavLink}
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                  to="/"
-                >
-                  Login
-                </Nav.Link>
-              </>
-            )}
-          </Nav>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              {user ? (
+                <>
+                  <Nav.Link
+                    as={NavLink}
+                    to="/dashboard"
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                  >
+                    Dashboard
+                  </Nav.Link>
+                  <Nav.Link
+                    as={NavLink}
+                    to="/posts"
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                  >
+                    Posts
+                  </Nav.Link>
+                  <Nav.Link
+                    as={NavLink}
+                    to="/crud"
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                  >
+                    CRUD
+                  </Nav.Link>
+                  <Nav.Link
+                    as={NavLink}
+                    to="/data"
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                  >
+                    Data
+                  </Nav.Link>
+                  <Nav.Link
+                    as={NavLink}
+                    to="/data-advanced"
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                  >
+                    Data Advanced
+                  </Nav.Link>
+                  <Nav.Link
+                    as={NavLink}
+                    to="/change-password"
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                  >
+                    Change Password
+                  </Nav.Link>
+                  <Nav.Link role="button" onClick={handleLogout}>
+                    Logout
+                  </Nav.Link>
+                </>
+              ) : (
+                <>
+                  <Nav.Link
+                    as={NavLink}
+                    to="/signup"
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                  >
+                    Signup
+                  </Nav.Link>
+                  <Nav.Link
+                    as={NavLink}
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                    to="/"
+                  >
+                    Login
+                  </Nav.Link>
+                </>
+              )}
+            </Nav>
+          </Navbar.Collapse>
         </Container>
       </Navbar>
     </>

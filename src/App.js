@@ -18,6 +18,7 @@ import ChangePassword from "./ChangePassword";
 import Toaster from "./Toaster";
 import Data from "./Data";
 import Page404 from "./Page404";
+import DataAdvance from "./DataAdvance";
 
 function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
@@ -208,6 +209,7 @@ function App() {
         <Route element={<ProtectedRoute user={user} isExpiring={isExpiring} />}>
           <Route path="/crud" element={<Users user={user} />} />
           <Route path="/data" element={<Data user={user} />} />
+          <Route path="/data-advanced" element={<DataAdvance user={user} />} />
           <Route path="/dashboard" element={<Dashboard user={user} />} />
           <Route path="/posts" element={<Posts user={user} />} />
           <Route
